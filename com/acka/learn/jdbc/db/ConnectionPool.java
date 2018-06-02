@@ -8,9 +8,11 @@ import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
 import javax.sql.DataSource;
 
-class ConnectionPool {
+public class ConnectionPool {
 
-    static DataSource setUpDataSource(String connectURI) {
+    private ObjectPool<PoolableConnection> connectionPool;
+
+    public DataSource setUpDataSource(String connectURI) {
 
         ObjectName test = null;
 
@@ -22,9 +24,8 @@ class ConnectionPool {
         PoolableConnectionFactory poolableConnectionFactory = new PoolableConnectionFactory(connectionFactory, null);
 
         //ObjectPool that serves as the actual pool of connections
-        ObjectPool<PoolableConnection> connectionPool;
         connectionPool = new GenericObjectPool<>(poolableConnectionFactory);
-        ((GenericObjectPool<PoolableConnection>) connectionPool).setMaxTotal(100);
+        ((GenericObjectPool<PoolableConnection>) connectionPool).setMaxTotal(50);
 
         // Set the factory's pool property to the owning pool
         poolableConnectionFactory.setPool(connectionPool);
@@ -35,5 +36,13 @@ class ConnectionPool {
         return dataSource;
     }
 
+    public void printAlive() {
+        if (connectionPool != null) {
+            System.out.println("Total alive: " + connectionPool.getNumActive());
+            System.out.println("Total Idle: " + connectionPool.getNumIdle());
+        } else {
+            System.out.println("This is empty");
+        }
+    }
 
 }

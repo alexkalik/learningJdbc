@@ -2,8 +2,10 @@ package com.acka.learn.jdbc.db;
 
 import javax.sql.DataSource;
 
-public class DerbyConnection {
+public class DerbyConnection extends ConnectionPool{
     private static volatile DataSource dataSource = null;
+    private static volatile ConnectionPool connectionPool = null;
+
     private static String JDBC_DRIVE = "org.apache.derby.jdbc.EmbeddedDriver";
     private static String JDBC_DB_URL = "jdbc:derby:testdb;create=true;";
     private static String JDBC_DB_USER = "";
@@ -13,29 +15,34 @@ public class DerbyConnection {
 
     }
 
-    public static DataSource getInstance () {
+    public static synchronized DataSource getInstance () {
         if (dataSource == null) {
-            synchronized(dataSource){
                 if (dataSource == null ) {
-                    return setUpDataSource();
+                    dataSource = setUpDataSource();
+                    return dataSource;
                 }
-            }
         }
 
         return dataSource;
     }
 
-    private static DataSource setUpDataSource () {
+    public static DataSource setUpDataSource () {
         try {
             Class.forName(JDBC_DRIVE);
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-
-        DataSource dataSource = ConnectionPool.setUpDataSource(JDBC_DB_URL);
-
-        System.out.println("Done.");
+        connectionPool = new ConnectionPool();
+        DataSource dataSource = connectionPool.setUpDataSource(JDBC_DB_URL);
         return dataSource;
+    }
+
+    public static void  poolAlive () {
+        if (connectionPool != null) {
+            connectionPool.printAlive();
+        } else {
+            System.out.println("No onw alive");
+        }
     }
 
 }
