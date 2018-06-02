@@ -1,14 +1,12 @@
 package com.acka.learn.jdbc.dao;
 
 import com.acka.learn.jdbc.dao.entityObject.Coffees;
-import com.acka.learn.jdbc.db.DerbyConnection;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import static java.lang.Thread.sleep;
 import static org.apache.derby.iapi.services.locks.VirtualLockTable.TABLENAME;
 
 public class CoffeesDao extends GenericDao<Coffees> {
@@ -18,7 +16,7 @@ public class CoffeesDao extends GenericDao<Coffees> {
     }
 
     @Override
-    public int count() throws SQLException {
+    public int count() {
         int count = 0;
         Statement stmt = null;
         ResultSet rs = null;
@@ -30,7 +28,6 @@ public class CoffeesDao extends GenericDao<Coffees> {
             while (rs.next()) {
                 count = rs.getInt(1);
             }
-            DerbyConnection.poolAlive();
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
@@ -61,7 +58,7 @@ public class CoffeesDao extends GenericDao<Coffees> {
                 for (int i=0; i<=numcols; i++) {
                     System.out.print("\t" + rs.getString(i));
                 }
-                System.out.println("");
+                System.out.println();
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -88,9 +85,8 @@ public class CoffeesDao extends GenericDao<Coffees> {
                 System.out.print("\t" + rs.getString(3));
                 System.out.print("\t" + rs.getString(4));
                 System.out.print("\t" + rs.getString(5));
-                System.out.println("");
+                System.out.println();
             }
-            DerbyConnection.poolAlive();
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
@@ -105,7 +101,7 @@ public class CoffeesDao extends GenericDao<Coffees> {
         Statement stmt = null;
         ResultSet rs = null;
         String sql = "UPDATE COFFEES " +
-                "SET SUP_ID = 30 WHERE COF_NAME = 'HELLO'";
+                "SET SUP_ID = '400000'";
         try {
             stmt = connection.createStatement();
             stmt.executeUpdate(sql);

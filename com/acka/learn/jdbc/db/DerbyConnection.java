@@ -37,7 +37,7 @@ public class DerbyConnection extends ConnectionPool{
         return dataSource;
     }
 
-    public static void  poolAlive () {
+    public static void poolAlive () {
         if (connectionPool != null) {
             connectionPool.printAlive();
         } else {

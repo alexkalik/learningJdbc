@@ -16,7 +16,7 @@ public class DaoManager {
 
         private DaoManager() {
         dataSource=DerbyConnection.getInstance();
-    };
+    }
 
     public static DaoManager getInstance() {
         return threadLocalDaoManager.get();
@@ -37,6 +37,24 @@ public class DaoManager {
         {
             if(this.connection!=null && !this.connection.isClosed())
                 this.connection.close();
+        }
+        catch(SQLException e) { throw e; }
+    }
+
+    public void commit() throws SQLException {
+        try
+        {
+            if(this.connection!=null && !this.connection.isClosed())
+                this.connection.commit();
+        }
+        catch(SQLException e) { throw e; }
+    }
+
+    public void rollback() throws SQLException {
+        try
+        {
+            if(this.connection!=null && !this.connection.isClosed())
+                this.connection.rollback();
         }
         catch(SQLException e) { throw e; }
     }
